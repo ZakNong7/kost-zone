@@ -31,13 +31,8 @@ Route::middleware('auth:owner')->prefix('owner')->group(function () {
     Route::put('/kost/{kost}', [KostController::class, 'update'])->name('kost.update');
     Route::delete('/kost/{kost}', [KostController::class, 'destroy'])->name('kost.destroy');
     Route::patch('/kost/{kost}/toggle', [KostController::class, 'toggleActive'])->name('kost.toggle');
-});
-Route::middleware('auth:owner')->prefix('owner')->group(function () {
-    Route::get('/dashboard', [OwnerController::class, 'dashboard'])->name('owner.dashboard');
     
-    // Kost Management
-    Route::post('/kost', [KostController::class, 'store'])->name('kost.store');
-    Route::put('/kost/{kost}', [KostController::class, 'update'])->name('kost.update');
-    Route::delete('/kost/{kost}', [KostController::class, 'destroy'])->name('kost.destroy');
-    Route::patch('/kost/{kost}/toggle', [KostController::class, 'toggleActive'])->name('kost.toggle');
+    // Image Management
+    Route::delete('/kost/{kost}/image', [KostController::class, 'deleteImage'])->name('kost.image.delete');
+    Route::delete('/kost/{kost}/images/all', [KostController::class, 'deleteAllImages'])->name('kost.images.deleteAll');
 });
