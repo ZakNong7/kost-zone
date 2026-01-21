@@ -36,3 +36,19 @@ Route::middleware('auth:owner')->prefix('owner')->group(function () {
     Route::delete('/kost/{kost}/image', [KostController::class, 'deleteImage'])->name('kost.image.delete');
     Route::delete('/kost/{kost}/images/all', [KostController::class, 'deleteAllImages'])->name('kost.images.deleteAll');
 });
+// Admin Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Guest routes
+    Route::middleware('guest:admin')->group(function () {
+        Route::get('/login', [App\Http\Controllers\Admin\AdminAuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [App\Http\Controllers\Admin\AdminAuthController::class, 'login']);
+    });
+
+    // Authenticated routes
+    Route::middleware('auth:admin')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/owners', [App\Http\Controllers\Admin\AdminOwnerController::class, 'index'])->name('owners');
+        Route::get('/owners/{owner}', [App\Http\Controllers\Admin\AdminOwnerController::class, 'show'])->name('owners.show');
+        Route::post('/logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout'])->name('logout');
+    });
+});

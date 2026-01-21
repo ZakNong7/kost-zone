@@ -13,7 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'owner' => \App\Http\Middleware\OwnerMiddleware::class,
+            'track.pageview' => \App\Http\Middleware\TrackPageView::class,
         ]);
+        $middleware->web(append: [
+        \App\Http\Middleware\TrackPageView::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

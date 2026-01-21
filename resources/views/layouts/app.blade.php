@@ -151,31 +151,36 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#ketentuanModal">
-                            <i class="bi bi-info-circle"></i> Ketentuan
-                        </a>
-                    </li>
-                    @auth('owner')
-                        <li class="nav-item">
-                            <span class="nav-link">Hai, {{ auth()->guard('owner')->user()->name }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-danger btn-sm ms-2">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                <i class="bi bi-person-circle"></i> Login Owner
-                            </button>
-                        </li>
-                    @endauth
-                </ul>
+    <li class="nav-item">
+        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#ketentuanModal">
+            <i class="bi bi-info-circle"></i> Ketentuan
+        </a>
+    </li>
+    @auth('owner')
+        <li class="nav-item">
+            <span class="nav-link">Hai, {{ auth()->guard('owner')->user()->name }}</span>
+        </li>
+        <li class="nav-item">
+            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-outline-danger btn-sm ms-2">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
+        </li>
+    @else
+        <li class="nav-item">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                <i class="bi bi-person-circle"></i> Login Owner
+            </button>
+        </li>
+        <li class="nav-item ms-2">
+            <a href="{{ route('admin.login') }}" class="btn btn-outline-dark">
+                <i class="bi bi-shield-lock"></i> Admin
+            </a>
+        </li>
+    @endauth
+</ul>
             </div>
         </div>
     </nav>

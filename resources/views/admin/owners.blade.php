@@ -1,0 +1,129 @@
+@extends('admin.layouts.admin')
+
+@section('title', 'Kelola Owner')
+@section('page-title', 'Kelola Owner Kost')
+
+@section('content')
+<div class="card-custom">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form action="{{ route('admin.owners') }}" method="GET" class="row g-2">
+                <div class="col-md-6">
+                    <input type="text" name="search" class="form-control" placeholder="Cari nama, email, atau telepon..." value="{{ request('search') }}">
+                </div>
+                <div class="col-md-4">
+                    <select name="verified" class="form-select">
+                        <option value="">Semua Status</option>
+                        <option value="yes" {{ request('verified') == 'yes' ? 'selected' : '' }}>Terverifikasi</option>
+                        <option value="no" {{ request('verified') == 'no' ? 'selected' : '' }}>Belum Verifikasi</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Cari
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="btn-group">
+                <a href="{{ route('admin.owners') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise"></i> Reset
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th width="5%">#</th>
+                    <th width="20%">Nama</th>
+                    <th width="20%">Email</th>
+                    <th width="15%">Telepon</th>
+                    <th width="10%" class="text-center">Jumlah Kost</th>
+                    <th width="10%" class="text-center">Status</th>
+                    <th width="10%" class="text-center">Terdaftar</th>
+                    <th width="10%" class="text-center">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($owners as $index => $owner)
+                <tr>
+                    <td>{{ $owners->firstItem() + $index }}</td>
+                    <td>
+                        <strong>{{ $owner->name }}</strong>
+                    </td>
+                    <td>{{ $owner->email }}</td>
+                    <td>{{ $owner->phone ?? '-' }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-primary">{{ $owner->kosts_count }} Kost</span>
+                    </td>
+                    <td class="text-center">
+                        @if($owner->email_verified_at)
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle"></i> Verified
+                            </span>
+                        @else
+                            <span class="badge bg-warning">
+                                <i class="bi bi-clock"></i> Pending
+                            </span>
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        <small>{{ $owner->created_at->format('d/m/Y') }}</small><br>
+                        <small class="text-muted">{{ $owner->created_at->diffForHumans() }}</small>
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('admin.owners.show', $owner) }}" class="btn btn-sm btn-info" title="Detail">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="8" class="text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="text-muted mt-2">Tidak ada data owner ditemukan</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    @if($owners->hasPages())
+    <div class="mt-4">
+        {{ $owners->links() }}
+    </div>
+    @endif
+</div>
+
+<!-- Summary Stats -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card-custom">
+            <h6 class="mb-3">Ringkasan</h6>
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <h4 class="text-primary">{{ $owners->total() }}</h4>
+                    <small class="text-muted">Total Owner</small>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-success">{{ $owners->where('email_verified_at', '!=', null)->count() }}</h4>
+                    <small class="text-muted">Terverifikasi</small>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-warning">{{ $owners->where('email_verified_at', null)->count() }}</h4>
+                    <small class="text-muted">Belum Verifikasi</small>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-info">{{ $owners->sum('kosts_count') }}</h4>
+                    <small class="text-muted">Total Kost</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
