@@ -8,18 +8,25 @@
         <h2><i class="bi bi-speedometer2"></i> Dashboard Owner</h2>
     </div>
 
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
     <!-- Owner Actions -->
     <div class="owner-actions">
         <div class="row g-3">
-            <div class="col-md-8">
+            <div class="col-12 col-md-8">
                 <form action="{{ route('owner.dashboard') }}" method="GET" class="row g-3">
-                    <div class="col-md-5">
+                    <div class="col-12 col-md-5">
                         <input type="text" name="location" class="form-control" placeholder="Cari lokasi..." value="{{ request('location') }}">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <input type="number" name="max_price" class="form-control" placeholder="Harga maks..." value="{{ request('max_price') }}">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-12 col-md-3">
                         <select name="type" class="form-select">
                             <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>Semua Tipe</option>
                             <option value="Putra" {{ request('type') == 'Putra' ? 'selected' : '' }}>Putra</option>
@@ -29,8 +36,8 @@
                     </div>
                 </form>
             </div>
-            <div class="col-md-4 text-end">
-                <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#addKostModal">
+            <div class="col-12 col-md-4 text-md-end">
+                <button class="btn btn-success btn-lg w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#addKostModal">
                     <i class="bi bi-plus-circle"></i> Tambah Kost
                 </button>
             </div>
@@ -40,7 +47,7 @@
     <!-- Kost Cards -->
     <div class="row mt-4">
         @forelse($kosts as $kost)
-        <div class="col-md-4 mb-4">
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
             <div class="card kost-card">
                 <div class="position-relative">
                     @if(count($kost->images) > 0)

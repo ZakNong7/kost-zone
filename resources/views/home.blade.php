@@ -15,19 +15,19 @@
     <!-- Filter Bar -->
     <div class="filter-bar">
         <form action="{{ route('home') }}" method="GET" class="row g-3">
-            <div class="col-md-4">
+            <div class="col-12 col-md-4">
                 <label class="form-label">
                     <i class="bi bi-geo-alt-fill"></i> Lokasi
                 </label>
                 <input type="text" name="location" class="form-control" placeholder="Cari lokasi..." value="{{ request('location') }}">
             </div>
-            <div class="col-md-3">
+            <div class="col-12 col-md-3">
                 <label class="form-label">
                     <i class="bi bi-cash-coin"></i> Harga Maksimal
                 </label>
                 <input type="number" name="max_price" class="form-control" placeholder="Contoh: 1000000" value="{{ request('max_price') }}">
             </div>
-            <div class="col-md-3">
+            <div class="col-12 col-md-3">
                 <label class="form-label">
                     <i class="bi bi-people-fill"></i> Tipe Kamar
                 </label>
@@ -38,7 +38,7 @@
                     <option value="Campuran" {{ request('type') == 'Campuran' ? 'selected' : '' }}>Campuran</option>
                 </select>
             </div>
-            <div class="col-md-2 d-flex align-items-end">
+            <div class="col-12 col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
                     <i class="bi bi-search"></i> Cari
                 </button>
@@ -49,7 +49,7 @@
     <!-- Kost Cards -->
     <div class="row">
         @forelse($kosts as $kost)
-        <div class="col-md-4 mb-4">
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
             <div class="card kost-card">
                 <div class="position-relative">
                     @if(count($kost->images) > 0)

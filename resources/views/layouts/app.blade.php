@@ -7,7 +7,10 @@
     <title>Kost Zone - @yield('title', 'Cari Kost Terbaik')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4a90e2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -135,6 +138,109 @@
         .owner-actions {
             margin-bottom: 20px;
         }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .logo-img {
+                height: 30px;
+            }
+            
+            .banner-container {
+                height: 250px;
+            }
+            
+            .filter-bar {
+                padding: 15px;
+            }
+            
+            .filter-bar .row {
+                gap: 10px;
+            }
+            
+            .filter-bar .col-md-4,
+            .filter-bar .col-md-3,
+            .filter-bar .col-md-2 {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .kost-card {
+                margin-bottom: 20px;
+            }
+            
+            .kost-card img {
+                height: 180px;
+            }
+            
+            .stat-card {
+                margin-bottom: 15px;
+            }
+            
+            .modal-dialog {
+                margin: 10px;
+            }
+            
+            .carousel-item img {
+                height: 250px;
+            }
+            
+            .facility-item {
+                font-size: 0.8rem;
+                padding: 4px 10px;
+            }
+            
+            .price-tag {
+                font-size: 1.1rem;
+            }
+            
+            /* Admin Mobile */
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .topbar {
+                padding: 10px 15px;
+            }
+            
+            .stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+            
+            /* Owner Dashboard Mobile */
+            .owner-actions .row {
+                gap: 10px;
+            }
+            
+            .owner-actions .col-md-8,
+            .owner-actions .col-md-4 {
+                width: 100%;
+            }
+        }
+        
+        /* Tablet */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .banner-container {
+                height: 300px;
+            }
+            
+            .kost-card img {
+                height: 200px;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -151,36 +257,31 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-    <li class="nav-item">
-        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#ketentuanModal">
-            <i class="bi bi-info-circle"></i> Ketentuan
-        </a>
-    </li>
-    @auth('owner')
-        <li class="nav-item">
-            <span class="nav-link">Hai, {{ auth()->guard('owner')->user()->name }}</span>
-        </li>
-        <li class="nav-item">
-            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                @csrf
-                <button type="submit" class="btn btn-outline-danger btn-sm ms-2">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </button>
-            </form>
-        </li>
-    @else
-        <li class="nav-item">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-                <i class="bi bi-person-circle"></i> Login Owner
-            </button>
-        </li>
-        <li class="nav-item ms-2">
-            <a href="{{ route('admin.login') }}" class="btn btn-outline-dark">
-                <i class="bi bi-shield-lock"></i> Admin
-            </a>
-        </li>
-    @endauth
-</ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#ketentuanModal">
+                            <i class="bi bi-info-circle"></i> Ketentuan
+                        </a>
+                    </li>
+                    @auth('owner')
+                        <li class="nav-item">
+                            <span class="nav-link">Hai, {{ auth()->guard('owner')->user()->name }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm ms-2">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="bi bi-person-circle"></i> Login Owner
+                            </button>
+                        </li>
+                    @endauth
+                </ul>
             </div>
         </div>
     </nav>
@@ -346,7 +447,6 @@
     @endguest
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('scripts')
     
     @if($errors->any())
