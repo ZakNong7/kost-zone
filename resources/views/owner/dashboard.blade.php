@@ -50,13 +50,13 @@
         <div class="col-12 col-sm-6 col-md-4 mb-4">
             <div class="card kost-card">
                 <div class="position-relative">
-                    @if(count($kost->images) > 0)
-                        <img src="{{ asset('storage/' . $kost->images[0]) }}" class="card-img-top" alt="{{ $kost->name }}">
-                    @else
-                        <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                            <i class="bi bi-house-door-fill" style="font-size: 3rem;"></i>
-                        </div>
-                    @endif
+                    @if(!empty($kost->images) && count($kost->images) > 0)
+    <img src="{{ $kost->images[0] }}" class="card-img-top" alt="{{ $kost->name }}">
+@else
+    <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+        <i class="bi bi-house-door-fill" style="font-size: 3rem;"></i>
+    </div>
+@endif
                     <span class="badge bg-primary badge-type">{{ $kost->type }}</span>
                 </div>
                 <div class="card-body">
@@ -174,17 +174,17 @@
                                     <label class="form-label">Foto Kost Saat Ini</label>
                                     @if(count($kost->images) > 0)
                                     <div class="row g-2 mb-3" id="imagePreview{{ $kost->id }}">
-                                        @foreach($kost->images as $index => $image)
-                                        <div class="col-md-3" id="imageItem{{ $kost->id }}_{{ $index }}">
-                                            <div class="position-relative">
-                                                <img src="{{ asset('storage/' . $image) }}" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
-                                                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" 
-                                                    onclick="deleteImage({{ $kost->id }}, '{{ $image }}', {{ $index }})"
-                                                    title="Hapus foto ini">
-                                                    <i class="bi bi-x-lg"></i>
-                                                </button>
+                                        @foreach($kost->images as $index => $imageUrl)
+                                            <div class="col-md-3" id="imageItem{{ $kost->id }}_{{ $index }}">
+                                                <div class="position-relative">
+                                                    <img src="{{ $imageUrl }}" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
+                                                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" 
+                                                            onclick="deleteImage({{ $kost->id }}, '{{ addslashes($imageUrl) }}', {{ $index }})"
+                                                            title="Hapus foto ini">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
                                         @endforeach
                                     </div>
                                     <button type="button" class="btn btn-danger btn-sm mb-2" onclick="deleteAllImages({{ $kost->id }})">
@@ -363,81 +363,142 @@
 <script>
 // Fungsi hapus satu foto
 function deleteImage(kostId, imagePath, imageIndex) {
-    if (!confirm('Apakah Anda yakin ingin menghapus foto ini?')) {
-        return;
-    }
-    
-    fetch(`/owner/kost/${kostId}/image`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({ image_path: imagePath })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Hapus element foto dari DOM
-            const imageItem = document.getElementById(`imageItem${kostId}_${imageIndex}`);
-            if (imageItem) {
-                imageItem.remove();
-            }
-            
-            // Jika tidak ada foto lagi, tampilkan alert
-            if (data.remaining_images === 0) {
-                const previewContainer = document.getElementById(`imagePreview${kostId}`);
-                if (previewContainer) {
-                    previewContainer.innerHTML = '<div class="col-12"><div class="alert alert-info"><i class="bi bi-info-circle"></i> Belum ada foto yang diupload</div></div>';
+    Swal.fire({
+        title: 'Hapus Foto?',
+        text: 'Foto ini akan dihapus permanen',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="bi bi-trash"></i> Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading
+            Swal.fire({
+                title: 'Menghapus...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
                 }
-            }
+            });
             
-            alert(data.message);
-        } else {
-            alert('Error: ' + data.message);
+            fetch(`/owner/kost/${kostId}/image`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ image_path: imagePath })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hapus element foto dari DOM
+                    const imageItem = document.getElementById(`imageItem${kostId}_${imageIndex}`);
+                    if (imageItem) {
+                        imageItem.remove();
+                    }
+                    
+                    // Jika tidak ada foto lagi
+                    if (data.remaining_images === 0) {
+                        const previewContainer = document.getElementById(`imagePreview${kostId}`);
+                        if (previewContainer) {
+                            previewContainer.innerHTML = '<div class="col-12"><div class="alert alert-info"><i class="bi bi-info-circle"></i> Belum ada foto yang diupload</div></div>';
+                        }
+                    }
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Foto berhasil dihapus',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: data.message || 'Terjadi kesalahan'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan saat menghapus foto'
+                });
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat menghapus foto');
     });
 }
 
 // Fungsi hapus semua foto
 function deleteAllImages(kostId) {
-    if (!confirm('Apakah Anda yakin ingin menghapus SEMUA foto? Tindakan ini tidak dapat dibatalkan!')) {
-        return;
-    }
-    
-    fetch(`/owner/kost/${kostId}/images/all`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Hapus semua foto dari DOM
-            const previewContainer = document.getElementById(`imagePreview${kostId}`);
-            if (previewContainer) {
-                previewContainer.innerHTML = '<div class="col-12"><div class="alert alert-info"><i class="bi bi-info-circle"></i> Belum ada foto yang diupload</div></div>';
-            }
+    Swal.fire({
+        title: 'Hapus Semua Foto?',
+        html: '<p class="text-danger"><strong>PERINGATAN!</strong></p><p>Semua foto akan dihapus permanen dan tidak dapat dikembalikan!</p>',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="bi bi-trash-fill"></i> Ya, Hapus Semua!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading
+            Swal.fire({
+                title: 'Menghapus semua foto...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             
-            alert(data.message);
-            
-            // Reload halaman setelah 1 detik
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-        } else {
-            alert('Error: ' + data.message);
+            fetch(`/owner/kost/${kostId}/images/all`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hapus semua foto dari DOM
+                    const previewContainer = document.getElementById(`imagePreview${kostId}`);
+                    if (previewContainer) {
+                        previewContainer.innerHTML = '<div class="col-12"><div class="alert alert-info"><i class="bi bi-info-circle"></i> Belum ada foto yang diupload</div></div>';
+                    }
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Semua foto berhasil dihapus',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: data.message || 'Terjadi kesalahan'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan saat menghapus foto'
+                });
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat menghapus foto');
     });
 }
 </script>

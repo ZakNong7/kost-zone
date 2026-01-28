@@ -203,7 +203,7 @@ new Chart(visitorCtx, {
             return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
         }),
         datasets: [{
-            label: 'Pengunjung Unik',
+            label: 'Pengunjung',
             data: visitorData.map(d => d.visitors),
             borderColor: '#667eea',
             backgroundColor: 'rgba(102, 126, 234, 0.1)',

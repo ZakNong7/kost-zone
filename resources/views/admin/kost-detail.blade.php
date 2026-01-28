@@ -54,10 +54,10 @@
             @if(count($kost->images) > 0)
             <div id="kostCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    @foreach($kost->images as $index => $image)
-                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                        <img src="{{ asset('storage/' . $image) }}" class="d-block w-100" style="height: 400px; object-fit: cover; border-radius: 10px;" alt="Foto {{ $index + 1 }}">
-                    </div>
+                    @foreach($kost->images as $index => $imageUrl)
+                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                            <img src="{{ $imageUrl }}" class="d-block w-100" style="height: 400px; object-fit: cover; border-radius: 10px;" alt="Foto {{ $index + 1 }}">
+                        </div>
                     @endforeach
                 </div>
                 @if(count($kost->images) > 1)

@@ -55,10 +55,10 @@
                     @if(count($kost->images) > 0)
                         <div id="previewCarousel{{ $kost->id }}" class="carousel slide" data-bs-ride="false">
                             <div class="carousel-inner">
-                                @foreach($kost->images as $index => $image)
-                                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                    <img src="{{ asset('storage/' . $image) }}" class="card-img-top" alt="{{ $kost->name }}">
-                                </div>
+                                @foreach($kost->images as $index => $imageUrl)
+                                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                        <img src="{{ $imageUrl }}" class="card-img-top" alt="{{ $kost->name }}">
+                                    </div>
                                 @endforeach
                             </div>
                             @if(count($kost->images) > 1)
@@ -131,10 +131,10 @@
                         @if(count($kost->images) > 0)
                         <div id="carousel{{ $kost->id }}" class="carousel slide mb-3" data-bs-ride="carousel">
                             <div class="carousel-inner">
-                                @foreach($kost->images as $index => $image)
-                                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                    <img src="{{ asset('storage/' . $image) }}" class="d-block w-100" alt="Foto {{ $index + 1 }}">
-                                </div>
+                                @foreach($kost->images as $index => $imageUrl)
+                                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                        <img src="{{ $imageUrl }}" class="d-block w-100" alt="Foto {{ $index + 1 }}">
+                                    </div>
                                 @endforeach
                             </div>
                             @if(count($kost->images) > 1)
