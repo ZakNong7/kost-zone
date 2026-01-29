@@ -436,6 +436,13 @@
             </div>
         </div>
     </div>
+    <footer class="text-white mt-5" style="background:#4a90e2;">
+        <div class="container py-4 text-center">
+            <p class="mb-1">©️ {{ date('Y') }} Kost Zone</p>
+            <small>Cari kost mudah & cepat</small><br>
+            <small>Project by Reyhan & Zakky</small>
+        </div>
+    </footer>
     @endguest
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
